@@ -3,7 +3,7 @@
 int main(int argc, char *argv[])
 {
 	char c;
-	FILE *fpl, *fp2;
+	FILE *fp1, *fp2;
 	if(argc !=3){
 		fprintf(stderr,"how to use:%s File1 File2\n",argv[0]);
 		return 1;
