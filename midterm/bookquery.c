@@ -1,27 +1,55 @@
-#include <stdio.h> 
-#include "book.h"
+#include <stdio.h>
+#include <stdlib.h>
 
-int main(int argc, char* argv[]) 
-{ 
-   struct book rec;
-   FILE *fp;
-   if (argc != 2) { 
-      fprintf(stderr, "How to use: %s FileName\n", argv[0]);
-      return 1; 
-   }
-   if ((fp = fopen(argv[1], "rb")) == NULL ) {
-      fprintf(stderr, "Error Open File\n");
-      return 2;
-   }
-   printf("-----------------------------------\n");
-   printf("%5s %10s %10s %5s %10s %5s\n", "책 고유 번호", "책 이름", "저자 이름", "출판 년도", "대출 횟수", "대출 유무");
-   printf("-----------------------------------\n");
-   
-   while (fread(&rec, sizeof(rec), 1, fp) > 0) 
-      if (rec.id != 0)
-         printf("%5d %10s %10s %5d %10d %5d\n", &id, bookname, author, &year, &numofborrow, &borrow);
-   
-   printf("-----------------------------------\n");
-   fclose(fp);
-   return 0;
+#define MAX_TITLE 50
+#define MAX_AUTHOR 30
+#define DB_FILE "db.dat"
+
+typedef struct {
+    int id;
+    char title[MAX_TITLE];
+    char author[MAX_AUTHOR];
+    int year;
+    int borrow_count;
+    int is_borrowed;
+} BOOK;
+
+void print_header(int type) {
+    printf("0: list of all books, 1: list of available books ) %d\n", type);
+    printf("id  bookname  author  year  numofborrow  borrow\n");
+}
+
+void print_book(const BOOK *book) {
+    const char *status = book->is_borrowed ? "True" : "False";
+    printf("%-2d  %-8s  %-6s  %-4d  %-11d  %-6s\n",
+           book->id, book->title, book->author, book->year, book->borrow_count, status);
+}
+
+int main(int argc, char *argv[]) {
+    FILE *fp;
+    BOOK book;
+    int query_type;
+    
+    if (argc != 2) {
+        fprintf(stderr, "Usage: ./bookquery <query_type> (0: All, 1: Available)\n");
+        return 1;
+    }
+    
+    query_type = atoi(argv[1]);
+
+    if ((fp = fopen(DB_FILE, "rb")) == NULL) {
+        perror("Error opening database file for reading");
+        return 1;
+    }
+    
+    print_header(query_type);
+    
+    while (fread(&book, sizeof(BOOK), 1, fp) == 1) {
+        if (query_type == 0 || (query_type == 1 && book.is_borrowed == 1)) {
+            print_book(&book);
+        }
+    }
+    
+    fclose(fp);
+    return 0;
 }

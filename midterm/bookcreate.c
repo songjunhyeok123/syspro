@@ -1,21 +1,44 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "book.h"
-int main(int argc, char* argv[])  
-{ 
-   struct book rec;
-   FILE *fp;
+#include <string.h>
 
-   if (argc != 2) {
-      fprintf(stderr, "How to use: %s FileName\n",argv[0]);
-      exit(1); 
-   }
+#define MAX_TITLE 50
+#define MAX_AUTHOR 30
+#define DB_FILE "db.dat"
 
-   fp = fopen(argv[1], "wb");
-   printf("%-9s %-9s %-9s %-9s %-9s %-9s\n", "책 고유 번호", "책 이름", "저자 이름", "출판 년도", "대출 횟수", "대출 유무"); 
-   while (scanf("%d %s %s %d %d %d", &id, bookname, author, &year, &numofborrow, &borrow) == 6) 
-      fwrite(&rec, sizeof(rec), 1, fp);
+typedef struct {
+    int id;
+    char title[MAX_TITLE];
+    char author[MAX_AUTHOR];
+    int year;
+    int borrow_count;
+    int is_borrowed; 
+} BOOK;
 
-   fclose(fp);
-   exit(0);
+int main() {
+    FILE *fp;
+    BOOK books[] = {
+        {1, "1984", "George", 1949, 7, 0},    
+        {2, "Luster", "Raven", 2020, 3, 1},   
+        {3, "Hamnet", "Maggie", 2020, 0, 0},  
+        {4, "theWish", "Nocholas", 2021, 2, 1}
+    };
+    int num_books = sizeof(books) / sizeof(BOOK);
+    
+    
+    if ((fp = fopen(DB_FILE, "wb")) == NULL) {
+        perror("Error opening database file for writing");
+        return 1;
+    }
+    
+    if (fwrite(books, sizeof(BOOK), num_books, fp) != num_books) {
+        fprintf(stderr, "Error writing all records to file\n");
+        fclose(fp);
+        return 1;
+    }
+    
+    fclose(fp);
+    printf("✅ Initial book data successfully created and saved to %s\n", DB_FILE);
+    
+    return 0;
 } 
