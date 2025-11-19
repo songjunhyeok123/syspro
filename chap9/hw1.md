@@ -1,2 +1,7 @@
-TEST
-<img width="276" height="178" alt="image" src="https://github.com/user-attachments/assets/5d1d95a1-61cb-43e9-8dc1-283c342db491" />
+<img width="522" height="312" alt="image" src="https://github.com/user-attachments/assets/06010698-8955-409f-9058-0084f4a4e41c" />
+1. sleep 100 & : 100초 동안 아무 작업도 하지 않고 기다리는 프로세르를 백그라운드에서 실행시킨다.
+2. sleep 100 & : 첫 번째와 동일하게 100초 동안 대기하는 백그라운드 프로세스가 추가된다.
+3. jobs : 현재 쉘(터미널 세션)에서 관리하고 있는 백그라운드 작업 목록을 보여줍니다.
+4. ps -f : 현재 시스템에서 실행 중인 프로세스들을 자세한 정보와 함께 보여준다.
+5. kill %1 :백그라운드 작업 중 작업번호 1번에 해당하는 프로세스에 종료 신호를 보낸다.
+6. ps -f : 다시 실행중인 프로세스 목록을 출력하는데 첫 번째 sleep 100 프로세스는 없어지고 두 번째 프로세스만 남아있는 걸 확인할 수 있다.
